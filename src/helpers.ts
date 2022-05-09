@@ -36,6 +36,7 @@ import {
   Facet,
   ArtifactData,
   ABI,
+  DeployOptionsBase,
 } from '../types';
 import {PartialExtension} from './internal/types';
 import {UnknownSignerError} from './errors';
@@ -909,6 +910,35 @@ export function addHelpers(
       }
     }
     return {differences: true, address: undefined};
+  }
+
+  async function buildDeploymentSubmission({
+    name,
+    contractAddress,
+    receipt,
+    options
+  }: {
+    name: string;
+    contractAddress: string;
+    options: DeployOptionsBase;
+    receipt?: Receipt;
+  }): Promise<DeploymentSubmission> {
+    const argsArray = options.args ? [...options.args] : [];
+    options = {...options, args: argsArray};
+    const {artifact: linkedArtifact} =
+      await getLinkedArtifact(name, options);
+  
+    // receipt missing
+    let deploymentSubmission: DeploymentSubmission = {
+      ...linkedArtifact,
+      address: contractAddress,
+      linkedData: options.linkedData,
+      libraries: options.libraries,
+      args: argsArray,
+      receipt
+    };
+  
+    return deploymentSubmission;
   }
 
   async function _deployOne(
@@ -2704,6 +2734,7 @@ data: ${data}
     rawTx,
     read,
     deterministic,
+    buildDeploymentSubmission
   };
 
   const utils = {

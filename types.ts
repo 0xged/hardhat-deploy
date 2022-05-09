@@ -212,6 +212,17 @@ export type FixtureFunc<T, O> = (
 ) => Promise<T>;
 
 export interface DeploymentsExtension {
+  buildDeploymentSubmission({
+    name,
+    contractAddress,
+    receipt,
+    options
+  }: {
+    name: string;
+    contractAddress: string;
+    options: DeployOptionsBase;
+    receipt?: Receipt;
+  }): Promise<DeploymentSubmission>;
   deploy(name: string, options: DeployOptions): Promise<DeployResult>; // deploy a contract
   diamond: {
     // deploy diamond based contract (see section below)
