@@ -533,11 +533,7 @@ export function getNetworkName(network: Network): string {
 
 export function getDeployPaths(network: Network): string[] {
   const networkName = getNetworkName(network);
-  if (networkName === network.name) {
-    return network.deploy || store.networks[networkName]?.deploy; // fallback to global store
-  } else {
-    return store.networks[networkName]?.deploy; // skip network.deploy
-  }
+  return network.deploy || store.networks[networkName]?.deploy; // fallback to global store
 }
 
 export function mergeABIs(
